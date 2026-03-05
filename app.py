@@ -1,10 +1,11 @@
 import streamlit as st
 import pandas as pd
 import gspread
-from oauth2client.service_account import ServiceAccountCredentials
 import json
+
 # 📱 스마트폰 화면 설정 (앱처럼 보이게)
 st.set_page_config(page_title="프레시밀 예약 확인", page_icon="🍱", layout="centered")
+
 # 🎨 디자인 (CSS)
 st.markdown("""
 <style>
@@ -13,26 +14,39 @@ st.markdown("""
     .error-box { background-color: #f8d7da; color: #721c24; padding: 20px; border-radius: 10px; text-align: center; margin-top: 20px; font-size: 20px; font-weight: bold;}
 </style>
 """, unsafe_allow_html=True)
+
 st.markdown('<div class="main-title">🍱 프레시밀 식사 예약 확인</div>', unsafe_allow_html=True)
+
 # ☁️ 구글 시트에서 명단 가져오기
-@st.cache_data(ttl=300) # 5분마다 새로고침 (서버 과부하 방지)
+@st.cache_data(ttl=300) # 5분마다 새로고침
 def load_data():
     try:
-        # 🤫 깃허브 비밀금고에서 구글 열쇠(JSON) 꺼내오기
+        # 1. 깃허브 비밀금고에서 구글 열쇠(JSON) 꺼내오기
         key_dict = json.loads(st.secrets["gcp_service_account"])
         
-        scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-        creds = ServiceAccountCredentials.from_json_keyfile_dict(key_dict, scope)
-        client = gspread.authorize(creds)
+        # 2. 🌟 최신 gspread 방식으로 로그인 (200 에러 충돌 완벽 해결!)
+        client = gspread.service_account_from_dict(key_dict)
         
-        # 📌 대장님이 직접 지은 그 이름!
+        # 3. 구글 시트 열기
         sheet = client.open("BKI프레시밀 오늘의 예약자 확인").sheet1
-        data = sheet.get_all_records()
-        return pd.DataFrame(data)
+        
+        # 4. 더 안전한 방식으로 데이터 가져오기
+        data = sheet.get_all_values()
+        
+        # 데이터가 없으면 빈 명단 반환
+        if not data or len(data) < 2:
+            return pd.DataFrame(columns=["사번", "사원명"])
+            
+        # 첫 번째 줄(헤더)을 컬럼명으로 사용
+        df = pd.DataFrame(data[1:], columns=data[0])
+        return df
+        
     except Exception as e:
         st.error(f"데이터를 불러오는 데 실패했습니다. 관리자에게 문의하세요. ({e})")
         return pd.DataFrame()
+
 df = load_data()
+
 if df.empty:
     st.warning("오늘 등록된 식사 예약 명단이 없습니다.")
 else:
