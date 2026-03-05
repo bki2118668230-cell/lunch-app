@@ -2,10 +2,8 @@ import streamlit as st
 import pandas as pd
 import gspread
 import json
-
 # 📱 스마트폰 화면 설정 (앱처럼 보이게)
 st.set_page_config(page_title="프레시밀 예약 확인", page_icon="🍱", layout="centered")
-
 # 🎨 디자인 (CSS)
 st.markdown("""
 <style>
@@ -14,9 +12,7 @@ st.markdown("""
     .error-box { background-color: #f8d7da; color: #721c24; padding: 20px; border-radius: 10px; text-align: center; margin-top: 20px; font-size: 20px; font-weight: bold;}
 </style>
 """, unsafe_allow_html=True)
-
 st.markdown('<div class="main-title">🍱 프레시밀 식사 예약 확인</div>', unsafe_allow_html=True)
-
 # ☁️ 구글 시트에서 명단 가져오기
 @st.cache_data(ttl=300) # 5분마다 새로고침
 def load_data():
@@ -44,9 +40,7 @@ def load_data():
     except Exception as e:
         st.error(f"데이터를 불러오는 데 실패했습니다. 관리자에게 문의하세요. ({e})")
         return pd.DataFrame()
-
 df = load_data()
-
 if df.empty:
     st.warning("오늘 등록된 식사 예약 명단이 없습니다.")
 else:
