@@ -30,7 +30,7 @@ def load_data():
         client = gspread.service_account_from_dict(key_dict)
         
         # 🌟 띄어쓰기 완벽하게 맞춰진 구글 시트 이름!
-        sheet = client.open("BKI 프레시밀 오늘의 예약자 확인").sheet1
+        sheet = client.open("BKI프레시밀 오늘의 예약자 확인").sheet1
         
         data = sheet.get_all_values()
         
