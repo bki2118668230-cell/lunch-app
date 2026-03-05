@@ -4,7 +4,7 @@ import gspread
 import json
 
 # 📱 스마트폰 화면 설정 (앱처럼 보이게)
-st.set_page_config(page_title="프레시밀 예약 확인", page_icon="🍱", layout="centered")
+st.set_page_config(page_title=, page_icon="🍱", layout="centered")
 
 # 🎨 디자인 (CSS)
 st.markdown("""
@@ -15,7 +15,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown('<div class="main-title">🍱 프레시밀 식사 예약 확인</div>', unsafe_allow_html=True)
+st.markdown('https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyMTEyMTVfMTAy%2FMDAxNjM5NTM3MzMzNjgw.niVtkehnbZKQJORlo7SA6iXZVnf1YLeG3ikt63NYNvEg.Z98gouiZmmbIpm9XAGReQLX8VLtw83H1YSOz55_m7Tgg.JPEG.togle_kr%2F2_%25BB%25E7%25BA%25BB.jpg&type=sc960_832', unsafe_allow_html=True)
 
 # ☁️ 구글 시트에서 명단 가져오기
 @st.cache_data(ttl=300) # 5분마다 새로고침
