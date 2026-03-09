@@ -49,7 +49,7 @@ IMAGE_DATA = {
     "🏢 사무실 1-2 구역 OA": {
         "🧻 티슈": "1-2_tissue.jpg",
         "💦 물티슈": "1-2_wipes.jpg",
-        "🔋 건전지": "1-2_battery.jpg",
+        "🔋 건전지": "1-1_battery.jpg",
         "🧴 퐁퐁": "1-2_pongpong.jpg",
         "🧽 수세미": "1-2_sponge.jpg",
         "🖨️ 복합기 작동 불가!": "printer_error.jpg"
@@ -57,7 +57,7 @@ IMAGE_DATA = {
     "🏢 사무실 2 구역 OA": {
         "🧻 티슈": "2_tissue.jpg",
         "💦 물티슈": "2_wipes.jpg",
-        "🔋 건전지": "2_battery.jpg",
+        "🔋 건전지": "1-1_battery.jpg",
         "🧴 퐁퐁": "2_pongpong.jpg",
         "🧽 수세미": "2_sponge.jpg",
         "🖨️ 복합기 작동 불가!": "printer_error.jpg"
