@@ -3,13 +3,16 @@ import requests
 import json
 import time
 
-# -------------------------------------------------------------------
-# 🚨 대장님이 발급받은 슬랙 웹훅 주소를 아래 따옴표 안에 꼭! 붙여넣으세요! 🚨
-# -------------------------------------------------------------------
-SLACK_WEBHOOK_URL = "https://hooks.slack.com/services/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"
+# --- 페이지 설정 ---
+st.set_page_config(page_title="브랜드웍스 비품 요정", page_icon="🧚", layout="centered")
+
+# --- 1. [비밀 금고에서 주소 꺼내오기] ---
+try:
+    SLACK_WEBHOOK_URL = st.secrets["SLACK_WEBHOOK"]
+except:
+    SLACK_WEBHOOK_URL = "" # 설정 안 되어있으면 무시
 
 # --- 2. [핵심] 장소별 맞춤 보물지도 설정 ---
-# 대장님이 장소, 물건, 숨겨진 위치를 마음대로 찍어내는 공장입니다!
 INVENTORY_DATA = {
     "🏢 3층 OA실": {
         "🧻 화장실 휴지": "복합기 옆 철제 캐비닛 2번째 칸",
@@ -27,9 +30,6 @@ INVENTORY_DATA = {
     }
 }
 
-# --- 페이지 설정 ---
-st.set_page_config(page_title="브랜드웍스 비품 요정", page_icon="🧚", layout="centered")
-
 # --- 상태 관리 ---
 if 'step' not in st.session_state:
     st.session_state.step = 1
@@ -40,7 +40,6 @@ if 'selected_item' not in st.session_state:
 if st.session_state.step == 1:
     st.title("🧚 무인 비품 요정")
     
-    # 📍 1. 장소 선택 드롭다운 (여기서 고르면 아래 버튼들이 싹 바뀝니다!)
     selected_location = st.selectbox(
         "📍 현재 계신 곳을 선택해주세요:",
         list(INVENTORY_DATA.keys())
@@ -49,11 +48,9 @@ if st.session_state.step == 1:
     st.markdown("### 앗! 필요한 비품이 떨어졌나요?\n아래에서 찾으시는 물품을 꾹! 눌러주세요.")
     st.write("---")
     
-    # 선택된 장소에 맞는 물품 리스트만 가져오기
     items_for_location = INVENTORY_DATA[selected_location]
     item_names = list(items_for_location.keys())
     
-    # 물품 버튼들을 동적으로 생성 (가로 2줄로 예쁘게)
     for i in range(0, len(item_names), 2):
         col1, col2 = st.columns(2)
         with col1:
@@ -70,12 +67,11 @@ if st.session_state.step == 1:
                     st.session_state.step = 2
                     st.rerun()
 
-# --- 화면 2단계: 숨겨진 보관소 안내 ---
+# --- 화면 2단계: 숨겨진 보관소 안내 및 슬랙 전송 ---
 elif st.session_state.step == 2:
     loc = st.session_state.selected_location
     item = st.session_state.selected_item
     
-    # 선택한 장소의 해당 물품 숨겨진 위치 찰떡같이 가져오기!
     hidden_spot = INVENTORY_DATA[loc][item]
     
     st.title(f"{item} 찾으시나요?! 👀")
@@ -85,18 +81,34 @@ elif st.session_state.step == 2:
     col1, col2 = st.columns(2)
     with col1:
         if st.button("🎉 앗, 찾았어요! (종료)", type="primary", use_container_width=True):
-            st.success("다행이네요! 오늘도 좋은 하루 보내세요! (3초 뒤 처음으로 돌아갑니다)")
-            time.sleep(3)
+            st.success("다행이네요! 오늘도 좋은 하루 보내세요! (2초 뒤 처음으로 돌아갑니다)")
+            time.sleep(2)
             st.session_state.step = 1
             st.session_state.selected_item = None
             st.rerun()
             
     with col2:
+        # 🚨 [대장님 요청 UX] 버튼 누르면 팝업 뜨고 바로 초기화면으로!
         if st.button("🚨 헐... 거기도 텅 비었어요!", type="secondary", use_container_width=True):
-            st.session_state.step = 3
+            
+            # 1. 화면 오른쪽 아래에 예쁜 팝업 띄우기 (2초 동안 뜸)
+            st.toast("✅ 총무 공지방에 전달 하였습니다!", icon="💌")
+            
+            # 2. 슬랙으로 알림 몰래 쏘기
+            if SLACK_WEBHOOK_URL != "":
+                slack_msg = {
+                    "blocks": [
+                        {"type": "header", "text": {"type": "plain_text", "text": "🚨 [비품 충전 SOS!]", "emoji": True}},
+                        {"type": "section", "text": {"type": "mrkdwn", "text": f"*📍 호출 장소:* {loc}\n*📦 요청 품목:* {item}\n\n*대장님! 숨겨둔 여분까지 다 떨어졌습니다! 빠른 충전 부탁드립니다! 🛒*"}}
+                    ]
+                }
+                try:
+                    requests.post(SLACK_WEBHOOK_URL, data=json.dumps(slack_msg), headers={'Content-Type': 'application/json'})
+                except:
+                    pass
+            
+            # 3. 2초 동안 팝업 볼 시간 주고, 바로 초기화면(1단계)으로 뿅! 넘어가기
+            time.sleep(2)
+            st.session_state.step = 1
+            st.session_state.selected_item = None
             st.rerun()
-
-# --- 화면 3단계: 장바구니 담기 (슬랙으로 알림 쏘기!) ---
-elif st.session_state.step == 3:
-    loc = st.session_state.selected_location
-    item_name = st
