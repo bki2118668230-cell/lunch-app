@@ -10,7 +10,7 @@ try:
 except:
     SLACK_WEBHOOK_URL = "" 
 
-# --- 2. [핵심] 장소별 맞춤 보물지도 & 해결책 설정 (2구역 복합기 추가 완료!!) ---
+# --- 2. [핵심] 장소별 맞춤 보물지도 & 해결책 설정 ---
 INVENTORY_DATA = {
     "🏢 사무실 1-1 구역 OA": {
         "🧻 티슈": "OA실 공용 캐비닛 1번 칸",
@@ -32,24 +32,42 @@ INVENTORY_DATA = {
         "🔋 건전지": "비품 서랍장 두 번째 칸",
         "🧴 퐁퐁": "탕비실 싱크대 아래 하부장",
         "🧽 수세미": "탕비실 싱크대 상부장 왼쪽",
-        "🖨️ 복합기 작동 불가!": "복합기 우측 하단 전원버튼을 껐다 켜주세요" # 👈 여기 추가했습니다!
+        "🖨️ 복합기 작동 불가!": "복합기 우측 하단 전원버튼을 껐다 켜주세요"
     }
 }
 
-# --- 3. 📸 [사진 앨범 세팅] ---
+# --- 3. 📸 [사진 앨범 세팅 (구역별로 완전 분리!)] ---
+# 🚨 깃허브에 올리신 구역별 사진 이름을 정확히 적어주세요! (예: 1-1_tissue.jpg)
+# 만약 아직 안 찍은 사진이 있다면 그냥 빈칸("")으로 두셔도 에러 안 나고 잘 돌아갑니다!
 IMAGE_DATA = {
-    "🧻 티슈": "tissue.jpg",
-    "💦 물티슈": "wipes.jpg",
-    "🔋 건전지": "battery.jpg",
-    "🧴 퐁퐁": "pongpong.jpg",
-    "🧽 수세미": "sponge.jpg",
-    "🖨️ 복합기 작동 불가!": "printer_error.jpg"
+    "🏢 사무실 1-1 구역 OA": {
+        "🧻 티슈": "1-1_tissue.jpg",
+        "💦 물티슈": "1-1_wipes.jpg",
+        "🔋 건전지": "1-1_battery.jpg",
+        "🖨️ 복합기 작동 불가!": "printer_error.jpg" # 복합기는 다 똑같이 생겼으면 같은 사진 써도 됩니다!
+    },
+    "🏢 사무실 1-2 구역 OA": {
+        "🧻 티슈": "1-2_tissue.jpg",
+        "💦 물티슈": "1-2_wipes.jpg",
+        "🔋 건전지": "1-2_battery.jpg",
+        "🧴 퐁퐁": "1-2_pongpong.jpg",
+        "🧽 수세미": "1-2_sponge.jpg",
+        "🖨️ 복합기 작동 불가!": "printer_error.jpg"
+    },
+    "🏢 사무실 2 구역 OA": {
+        "🧻 티슈": "2_tissue.jpg",
+        "💦 물티슈": "2_wipes.jpg",
+        "🔋 건전지": "2_battery.jpg",
+        "🧴 퐁퐁": "2_pongpong.jpg",
+        "🧽 수세미": "2_sponge.jpg",
+        "🖨️ 복합기 작동 불가!": "printer_error.jpg"
+    }
 }
 
 # --- 페이지 설정 ---
 st.set_page_config(page_title="브랜드웍스 비품 요정", page_icon="🧚", layout="centered")
 
-# --- 상태 관리 (기억 장치 발동!) ---
+# --- 상태 관리 ---
 if 'step' not in st.session_state:
     st.session_state.step = 1
 if 'selected_item' not in st.session_state:
@@ -61,7 +79,6 @@ if 'selected_location' not in st.session_state:
 if st.session_state.step == 1:
     st.title("🧚 무인 비품 요정")
     
-    # 🚨 요정이 방금 전까지 보고 있던 구역을 찰떡같이 기억해냅니다!
     locations_list = list(INVENTORY_DATA.keys())
     
     if st.session_state.selected_location in locations_list:
@@ -103,7 +120,10 @@ elif st.session_state.step == 2:
     item = st.session_state.selected_item
     
     hidden_spot = INVENTORY_DATA[loc][item]
-    image_file = IMAGE_DATA.get(item, "")
+    
+    # 📸 [사진 띄우기 마법!]
+    # 이제 구역(loc)을 먼저 찾고, 그 안에서 물건(item) 사진을 찾습니다!
+    image_file = IMAGE_DATA.get(loc, {}).get(item, "")
     
     if "복합기" in item:
         st.title("🖨️ 복합기에 문제가 생겼군요! 💦")
