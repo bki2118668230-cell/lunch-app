@@ -10,7 +10,7 @@ try:
 except:
     SLACK_WEBHOOK_URL = "" 
 
-# --- 2. [핵심] 장소별 맞춤 보물지도 & 해결책 설정 ---
+# --- 2. [핵심] 장소별 맞춤 보물지도 & 해결책 설정 (2구역 복합기 추가 완료!!) ---
 INVENTORY_DATA = {
     "🏢 사무실 1-1 구역 OA": {
         "🧻 티슈": "OA실 공용 캐비닛 1번 칸",
@@ -31,8 +31,8 @@ INVENTORY_DATA = {
         "💦 물티슈": "복합기 바로 옆 선반",
         "🔋 건전지": "비품 서랍장 두 번째 칸",
         "🧴 퐁퐁": "탕비실 싱크대 아래 하부장",
-        "🧽 수세미": "탕비실 싱크대 상부장 왼쪽"
-        "🖨️ 복합기 작동 불가!": "복합기 우측 하단 전원버튼을 껐다 켜주세요"
+        "🧽 수세미": "탕비실 싱크대 상부장 왼쪽",
+        "🖨️ 복합기 작동 불가!": "복합기 우측 하단 전원버튼을 껐다 켜주세요" # 👈 여기 추가했습니다!
     }
 }
 
@@ -49,36 +49,32 @@ IMAGE_DATA = {
 # --- 페이지 설정 ---
 st.set_page_config(page_title="브랜드웍스 비품 요정", page_icon="🧚", layout="centered")
 
-# --- 상태 관리 (기억 장치 업그레이드!) ---
+# --- 상태 관리 (기억 장치 발동!) ---
 if 'step' not in st.session_state:
     st.session_state.step = 1
 if 'selected_item' not in st.session_state:
     st.session_state.selected_item = None
 if 'selected_location' not in st.session_state:
-    # 최초 접속 시에는 1-1구역으로 둡니다
     st.session_state.selected_location = list(INVENTORY_DATA.keys())[0]
 
 # --- 화면 1단계: 장소 및 물품 선택 ---
 if st.session_state.step == 1:
     st.title("🧚 무인 비품 요정")
     
-    # 🚨 [여기서부터 기억력 천재 마법 발동!] 🚨
+    # 🚨 요정이 방금 전까지 보고 있던 구역을 찰떡같이 기억해냅니다!
     locations_list = list(INVENTORY_DATA.keys())
     
-    # 방금 전까지 보고 있던 구역이 몇 번째 칸에 있는지 번호를 찾습니다!
     if st.session_state.selected_location in locations_list:
         default_idx = locations_list.index(st.session_state.selected_location)
     else:
         default_idx = 0
         
-    # 요정아, 메뉴판 띄울 때 방금 보던 구역(default_idx)을 기본값으로 보여줘!
     current_loc = st.selectbox(
         "📍 현재 계신 구역을 선택해주세요:",
         locations_list,
         index=default_idx
     )
     
-    # 누군가 구역을 바꾸면, 요정 머릿속에 바로 업데이트 시킵니다!
     st.session_state.selected_location = current_loc
     
     st.markdown("### 앗! 필요한 비품이나 도움이 필요한가요?\n아래에서 해당하는 항목을 선택해주세요.")
@@ -124,7 +120,6 @@ elif st.session_state.step == 2:
     
     col1, col2 = st.columns(2)
     with col1:
-        # [해결 완료 버튼]
         if st.button("🎉 앗, 해결했어요! (종료)", type="primary", use_container_width=True):
             st.success("다행이네요! 오늘도 좋은 하루 보내세요! (2초 뒤 처음으로 돌아갑니다)")
             time.sleep(2)
@@ -133,7 +128,6 @@ elif st.session_state.step == 2:
             st.rerun()
             
     with col2:
-        # [도움 요청 버튼]
         btn_text = "🚨 헐... 그래도 안 돼요!" if "복합기" in item else "🚨 헐... 거기도 텅 비었어요!"
         
         if st.button(btn_text, type="secondary", use_container_width=True):
