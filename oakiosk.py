@@ -44,7 +44,7 @@ IMAGE_DATA = {
         "🧻 티슈": "1-1_tissue.jpg",
         "💦 물티슈": "1-1_wipes.jpg",
         "🔋 건전지": "1-1_battery.jpg",
-        "🖨️ 복합기 작동 불가!": "printer_error.jpg" # 복합기는 다 똑같이 생겼으면 같은 사진 써도 됩니다!
+        "🖨️ 복합기 작동 불가!": "printer_error.png" # 복합기는 다 똑같이 생겼으면 같은 사진 써도 됩니다!
     },
     "🏢 사무실 1-2 구역 OA": {
         "🧻 티슈": "1-2_tissue.jpg",
