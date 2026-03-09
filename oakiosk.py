@@ -6,7 +6,7 @@ import time
 # -------------------------------------------------------------------
 # 🚨 대장님이 발급받은 슬랙 웹훅 주소를 아래 따옴표 안에 꼭! 붙여넣으세요! 🚨
 # -------------------------------------------------------------------
-SLACK_WEBHOOK_URL = "https://hooks.slack.com/services/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"
+SLACK_WEBHOOK_URL = "https://hooks.slack.com/services/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"
 
 # --- 2. [핵심] 장소별 맞춤 보물지도 설정 ---
 # 대장님이 장소, 물건, 숨겨진 위치를 마음대로 찍어내는 공장입니다!
