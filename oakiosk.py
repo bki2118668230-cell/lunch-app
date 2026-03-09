@@ -3,10 +3,8 @@ import requests
 import json
 import time
 
-# --- 페이지 설정 ---
-st.set_page_config(page_title="브랜드웍스 비품 요정", page_icon="🧚", layout="centered")
-
 # --- 1. [비밀 금고에서 주소 꺼내오기] ---
+# 대장님이 스트림릿 설정(Secrets)에 숨겨둔 주소를 몰래 꺼내옵니다.
 try:
     SLACK_WEBHOOK_URL = st.secrets["SLACK_WEBHOOK"]
 except:
@@ -29,6 +27,9 @@ INVENTORY_DATA = {
         "🧻 물티슈": "소파 옆 테이블 아래 바구니"
     }
 }
+
+# --- 페이지 설정 ---
+st.set_page_config(page_title="브랜드웍스 비품 요정", page_icon="🧚", layout="centered")
 
 # --- 상태 관리 ---
 if 'step' not in st.session_state:
@@ -80,6 +81,7 @@ elif st.session_state.step == 2:
     
     col1, col2 = st.columns(2)
     with col1:
+        # [왼쪽 버튼] 앗 찾았어요!
         if st.button("🎉 앗, 찾았어요! (종료)", type="primary", use_container_width=True):
             st.success("다행이네요! 오늘도 좋은 하루 보내세요! (2초 뒤 처음으로 돌아갑니다)")
             time.sleep(2)
@@ -88,13 +90,13 @@ elif st.session_state.step == 2:
             st.rerun()
             
     with col2:
-        # 🚨 [대장님 요청 UX] 버튼 누르면 팝업 뜨고 바로 초기화면으로!
+        # [오른쪽 버튼] 헐 거기도 텅 비었어요! (대장님 요청 디자인 반영!)
         if st.button("🚨 헐... 거기도 텅 비었어요!", type="secondary", use_container_width=True):
             
-            # 1. 화면 오른쪽 아래에 예쁜 팝업 띄우기 (2초 동안 뜸)
-            st.toast("✅ 총무 공지방에 전달 하였습니다!", icon="💌")
+            # 1. 앗 찾았어요 처럼 크고 듬직한 초록색 알림창 띄우기!
+            st.success("✅ 총무 공지방에 전달 하였습니다! 빠른 시일 내에 꽉꽉 채워둘게요! (2초 뒤 처음으로 돌아갑니다)")
             
-            # 2. 슬랙으로 알림 몰래 쏘기
+            # 2. 슬랙으로 알림 발사!
             if SLACK_WEBHOOK_URL != "":
                 slack_msg = {
                     "blocks": [
@@ -107,7 +109,7 @@ elif st.session_state.step == 2:
                 except:
                     pass
             
-            # 3. 2초 동안 팝업 볼 시간 주고, 바로 초기화면(1단계)으로 뿅! 넘어가기
+            # 3. 2초 동안 초록색 알림창 보여주고 초기화면으로 뿅!
             time.sleep(2)
             st.session_state.step = 1
             st.session_state.selected_item = None
