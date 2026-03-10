@@ -16,7 +16,8 @@ INVENTORY_DATA = {
         "🧻 티슈": "쇼룸 우측 정수기 옆 첫번째 캐비닛",
         "💦 물티슈": "쇼룸 우측 정수기 옆 첫번째 두번째 캐비넷",
         "🔋 건전지": "복합기 옆 사무용품 보관함",
-        "🖨️ 복합기 작동 불가!": "복합기 우측 하단 전원버튼을 껐다 켜주세요"
+        "🖨️ 복합기 작동 불가!": "복합기 우측 하단 전원버튼을 껐다 켜주세요",
+        "🖨️ 복합기 토너 교체": "복합기 하단 토너 보관함을 확인해주세요" # 👈 추가! (실제 위치로 수정해서 쓰세요)
     },
     "🏢 사무실 1-2 구역 OA": {
         "🧻 티슈": "OA실 싱크대 위 1번 칸",
@@ -24,7 +25,8 @@ INVENTORY_DATA = {
         "🔋 건전지": "OA실 책상 위 사무용품 보관함",
         "🧴 퐁퐁": "OA실 싱크대 위 2번쨰 선반",
         "🧽 수세미": "OA실 싱크대 위 2번째 선반",
-        "🖨️ 복합기 작동 불가!": "복합기 우측 하단 전원버튼을 껐다 켜주세요"
+        "🖨️ 복합기 작동 불가!": "복합기 우측 하단 전원버튼을 껐다 켜주세요",
+        "🖨️ 복합기 토너 교체": "복합기 하단 토너 보관함을 확인해주세요" # 👈 추가!
     },
     "🏢 사무실 2 구역 OA": {
         "🧻 티슈": "OA 하단 선반",
@@ -32,7 +34,8 @@ INVENTORY_DATA = {
         "🔋 건전지": "OA 우측 끝 사무용품 보관함",
         "🧴 퐁퐁": "싱크대 위 좌측 2번째 상부장",
         "🧽 수세미": "싱크대 위 1번째 상부장",
-        "🖨️ 복합기 작동 불가!": "복합기 우측 하단 전원버튼을 껐다 켜주세요"
+        "🖨️ 복합기 작동 불가!": "복합기 우측 하단 전원버튼을 껐다 켜주세요",
+        "🖨️ 복합기 토너 교체": "복합기 하단 토너 보관함을 확인해주세요" # 👈 추가!
     }
 }
 
@@ -42,7 +45,8 @@ IMAGE_DATA = {
         "🧻 티슈": "1-1_tissue.jpg",
         "💦 물티슈": "1-1_wipes.jpg",
         "🔋 건전지": "1-1_battery.jpg",
-        "🖨️ 복합기 작동 불가!": "printer_error.png"
+        "🖨️ 복합기 작동 불가!": "printer_error.png",
+        "🖨️ 복합기 토너 교체": "toner.jpg" # 👈 추가! (깃허브에 toner.png 올리시면 됩니다)
     },
     "🏢 사무실 1-2 구역 OA": {
         "🧻 티슈": "1-2_tissue.jpg",
@@ -50,7 +54,8 @@ IMAGE_DATA = {
         "🔋 건전지": "1-2_battery.jpg",
         "🧴 퐁퐁": "1-2_pongpong.jpg",
         "🧽 수세미": "1-2_sponge.jpg",
-        "🖨️ 복합기 작동 불가!": "printer_error.png"
+        "🖨️ 복합기 작동 불가!": "printer_error.png",
+        "🖨️ 복합기 토너 교체": "toner.jpg" # 👈 추가!
     },
     "🏢 사무실 2 구역 OA": {
         "🧻 티슈": "2_tissue.jpg",
@@ -58,14 +63,15 @@ IMAGE_DATA = {
         "🔋 건전지": "2_battery.jpg",
         "🧴 퐁퐁": "2_pongpong.jpg",
         "🧽 수세미": "2_sponge.jpg",
-        "🖨️ 복합기 작동 불가!": "printer_error.png"
+        "🖨️ 복합기 작동 불가!": "printer_error.png",
+        "🖨️ 복합기 토너 교체": "toner.jpg" # 👈 추가!
     }
 }
 
 # --- 페이지 설정 ---
 st.set_page_config(page_title="브랜드웍스 비품 요정", page_icon="🧚", layout="centered")
 
-# 🚨 [새로 추가된 마법의 공간] 태블릿 가로모드 스크롤 & 사진 크기 제어 CSS 🚨
+# 🚨 태블릿 가로모드 스크롤 & 사진 크기 제어 CSS 🚨
 st.markdown("""
     <style>
     /* 1. 태블릿에서 사진 위를 터치해도 스크롤이 무조건 먹히도록 강제 활성화 */
@@ -78,7 +84,7 @@ st.markdown("""
     [data-testid="stImage"] img {
         max-height: 45vh !important;
         object-fit: contain !important;
-        border-radius: 10px; /* 사진 모서리 둥글게 (보너스 예쁨 효과) */
+        border-radius: 10px; 
     }
     </style>
 """, unsafe_allow_html=True)
@@ -138,16 +144,27 @@ elif st.session_state.step == 2:
     hidden_spot = INVENTORY_DATA[loc][item]
     image_file = IMAGE_DATA.get(loc, {}).get(item, "")
     
-    if "복합기" in item:
+    # 🚨 [여기서부터 눈치 100단 요정 출동!] 🚨
+    if "작동 불가" in item:
         st.title("🖨️ 복합기에 문제가 생겼군요! 💦")
         if image_file != "" and os.path.exists(image_file):
             st.image(image_file, use_container_width=True)
         st.info(f"💡 **총무팀에 연락하기 전에 먼저 이렇게 해보시겠어요?**\n\n👉 **{hidden_spot}**")
+        btn_text = "🚨 헐... 그래도 안 돼요!"
+        
+    elif "토너" in item:
+        st.title("🖨️ 토너 교체가 필요하시군요! 💦")
+        if image_file != "" and os.path.exists(image_file):
+            st.image(image_file, use_container_width=True)
+        st.info(f"💡 **총무팀에 연락하기 전에 먼저 확인해 주시겠어요?**\n\n👉 **{hidden_spot}**")
+        btn_text = "🚨 헐... 거기도 여분이 없어요(또는 못하겠어요)!"
+        
     else:
         st.title(f"[{item}] 찾으시나요? 👀")
         if image_file != "" and os.path.exists(image_file):
             st.image(image_file, use_container_width=True)
         st.info(f"💡 **잠깐만요!**\n\n현재 계신 **{loc}**의 **[{hidden_spot}]**에 항상 여분을 채워두고 있습니다. 총무팀에 요청하기 전, 먼저 확인해 주시겠어요?")
+        btn_text = "🚨 헐... 거기도 텅 비었어요!"
         
     st.write("---")
     
@@ -161,14 +178,15 @@ elif st.session_state.step == 2:
             st.rerun()
             
     with col2:
-        btn_text = "🚨 헐... 그래도 안 돼요!" if "복합기" in item else "🚨 헐... 거기도 텅 비었어요!"
-        
         if st.button(btn_text, type="secondary", use_container_width=True):
             st.success("✅ 총무팀에 전달되었습니다. 빠른 시일 내에 확인하겠습니다. (2초 뒤 처음으로 돌아갑니다)")
             
             if SLACK_WEBHOOK_URL != "":
-                if "복합기" in item:
+                # 🚨 상황에 따라 슬랙 말투 싹 바꾸기!
+                if "작동 불가" in item:
                     slack_msg = {"text": f"<@U04DBLZ8TDW> 님! 🚨 {loc} 복합기가 고장 났대요! 전원 껐다 켜도 안 된대요! 확인해주세요! 😢"}
+                elif "토너" in item:
+                    slack_msg = {"text": f"<@U04DBLZ8TDW> 님! 🚨 {loc} 복합기 토너가 다 떨어졌대요! 확인 및 발주가 필요합니다! 😢"}
                 else:
                     slack_msg = {"text": f"<@U04DBLZ8TDW> 님! {loc}에 {item} 비품이 다 떨어졌어요. 채워주세요! 😢"}
                 
