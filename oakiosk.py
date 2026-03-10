@@ -11,13 +11,14 @@ except:
     SLACK_WEBHOOK_URL = "" 
 
 # --- 2. [핵심] 장소별 맞춤 보물지도 & 해결책 설정 ---
+# 🚨 대장님 명령대로 모든 구역 토너 교체 문구에 \n (줄바꿈) 완벽 적용!
 INVENTORY_DATA = {
     "🏢 사무실 1-1 구역 OA": {
         "🧻 티슈": "쇼룸 우측 정수기 옆 첫번째 캐비닛",
         "💦 물티슈": "쇼룸 우측 정수기 옆 첫번째 두번째 캐비넷",
         "🔋 건전지": "복합기 옆 사무용품 보관함",
         "🖨️ 복합기 작동 불가!": "복합기 우측 하단 전원버튼을 껐다 켜주세요",
-        "🖨️ 복합기 토너 교체": "복합기 하단 토너 보관함을 확인해주세요\n복합기 화면가이드에 맞춰 교체 진행해주세요!" # 👈 추가! (실제 위치로 수정해서 쓰세요)
+        "🖨️ 복합기 토너 교체": "복합기 하단 토너 보관함을 확인해주세요\n👉 복합기 화면가이드에 맞춰 교체 진행해주세요!"
     },
     "🏢 사무실 1-2 구역 OA": {
         "🧻 티슈": "OA실 싱크대 위 1번 칸",
@@ -26,7 +27,7 @@ INVENTORY_DATA = {
         "🧴 퐁퐁": "OA실 싱크대 위 2번쨰 선반",
         "🧽 수세미": "OA실 싱크대 위 2번째 선반",
         "🖨️ 복합기 작동 불가!": "복합기 우측 하단 전원버튼을 껐다 켜주세요",
-        "🖨️ 복합기 토너 교체": "복합기 하단 토너 보관함을 확인해주세요\n복합기 화면가이드에 맞춰 교체 진행해주세요!" # 👈 추가!
+        "🖨️ 복합기 토너 교체": "복합기 하단 토너 보관함을 확인해주세요\n👉 복합기 화면가이드에 맞춰 교체 진행해주세요!"
     },
     "🏢 사무실 2 구역 OA": {
         "🧻 티슈": "OA 하단 선반",
@@ -35,7 +36,7 @@ INVENTORY_DATA = {
         "🧴 퐁퐁": "싱크대 위 좌측 2번째 상부장",
         "🧽 수세미": "싱크대 위 1번째 상부장",
         "🖨️ 복합기 작동 불가!": "복합기 우측 하단 전원버튼을 껐다 켜주세요",
-        "🖨️ 복합기 토너 교체": "복합기 하단 토너 보관함을 확인해주세요\n복합기 화면가이드에 맞춰 교체 진행해주세요!" # 👈 추가!
+        "🖨️ 복합기 토너 교체": "복합기 하단 토너 보관함을 확인해주세요\n👉 복합기 화면가이드에 맞춰 교체 진행해주세요!"
     }
 }
 
@@ -46,7 +47,7 @@ IMAGE_DATA = {
         "💦 물티슈": "1-1_wipes.jpg",
         "🔋 건전지": "1-1_battery.jpg",
         "🖨️ 복합기 작동 불가!": "printer_error.png",
-        "🖨️ 복합기 토너 교체": "toner.jpg" # 👈 추가! (깃허브에 toner.png 올리시면 됩니다)
+        "🖨️ 복합기 토너 교체": "toner.png" 
     },
     "🏢 사무실 1-2 구역 OA": {
         "🧻 티슈": "1-2_tissue.jpg",
@@ -55,7 +56,7 @@ IMAGE_DATA = {
         "🧴 퐁퐁": "1-2_pongpong.jpg",
         "🧽 수세미": "1-2_sponge.jpg",
         "🖨️ 복합기 작동 불가!": "printer_error.png",
-        "🖨️ 복합기 토너 교체": "toner.jpg" # 👈 추가!
+        "🖨️ 복합기 토너 교체": "toner.png" 
     },
     "🏢 사무실 2 구역 OA": {
         "🧻 티슈": "2_tissue.jpg",
@@ -64,27 +65,33 @@ IMAGE_DATA = {
         "🧴 퐁퐁": "2_pongpong.jpg",
         "🧽 수세미": "2_sponge.jpg",
         "🖨️ 복합기 작동 불가!": "printer_error.png",
-        "🖨️ 복합기 토너 교체": "toner.jpg" # 👈 추가!
+        "🖨️ 복합기 토너 교체": "toner.png" 
     }
 }
 
 # --- 페이지 설정 ---
 st.set_page_config(page_title="브랜드웍스 비품 요정", page_icon="🧚", layout="centered")
 
-# 🚨 태블릿 가로모드 스크롤 & 사진 크기 제어 CSS 🚨
+# 🚨 [초강력 스크롤 마법 추가] 1-2구역 탭에서도 무조건 스크롤 되게 만들기! 🚨
 st.markdown("""
     <style>
-    /* 1. 태블릿에서 사진 위를 터치해도 스크롤이 무조건 먹히도록 강제 활성화 */
-    .main {
+    /* 1. 어떤 브라우저든 화면 전체 스크롤 무조건 허용 */
+    html, body, [data-testid="stAppViewContainer"], .main {
         overflow-y: auto !important;
         touch-action: pan-y !important;
     }
     
-    /* 2. 가로 모드일 때 사진이 화면 밖으로 튀어나가지 않게 높이를 화면의 45%로 제한 */
+    /* 2. 사진 크기 최적화 및 터치 먹통 방어막(pointer-events) 설치! */
     [data-testid="stImage"] img {
-        max-height: 45vh !important;
+        max-height: 40vh !important; /* 버튼이 잘 보이게 사진 높이를 조금 더 줄임 (45->40) */
         object-fit: contain !important;
         border-radius: 10px; 
+        pointer-events: none !important; /* 🔥 핵심: 사진 위를 터치해도 스크롤이 되게 만듦! */
+    }
+    
+    /* 3. 화면 맨 밑에 숨쉴 공간을 줘서 버튼이 위로 쑥 올라오게 함 */
+    .block-container {
+        padding-bottom: 5rem !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -144,7 +151,6 @@ elif st.session_state.step == 2:
     hidden_spot = INVENTORY_DATA[loc][item]
     image_file = IMAGE_DATA.get(loc, {}).get(item, "")
     
-    # 🚨 [여기서부터 눈치 100단 요정 출동!] 🚨
     if "작동 불가" in item:
         st.title("🖨️ 복합기에 문제가 생겼군요! 💦")
         if image_file != "" and os.path.exists(image_file):
@@ -182,11 +188,10 @@ elif st.session_state.step == 2:
             st.success("✅ 총무팀에 전달되었습니다. 빠른 시일 내에 확인하겠습니다. (2초 뒤 처음으로 돌아갑니다)")
             
             if SLACK_WEBHOOK_URL != "":
-                # 🚨 상황에 따라 슬랙 말투 싹 바꾸기!
                 if "작동 불가" in item:
                     slack_msg = {"text": f"<@U04DBLZ8TDW> 님! 🚨 {loc} 복합기가 고장 났대요! 전원 껐다 켜도 안 된대요! 확인해주세요! 😢"}
                 elif "토너" in item:
-                    slack_msg = {"text": f"<@U04DBLZ8TDW> 님! 🚨 {loc} 복합기 토너가 다 떨어졌대요! 확인 및 발주가 필요합니다! 😢"}
+                    slack_msg = {"text": f"<@U04DBLZ8TDW> 님! 🚨 {loc} 복합기 토너가 다 떨어졌대요! 확인 및 교체가 필요합니다! 😢"}
                 else:
                     slack_msg = {"text": f"<@U04DBLZ8TDW> 님! {loc}에 {item} 비품이 다 떨어졌어요. 채워주세요! 😢"}
                 
