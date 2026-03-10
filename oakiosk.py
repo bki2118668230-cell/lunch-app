@@ -47,7 +47,7 @@ IMAGE_DATA = {
         "💦 물티슈": "1-1_wipes.jpg",
         "🔋 건전지": "1-1_battery.jpg",
         "🖨️ 복합기 작동 불가!": "printer_error.png",
-        "🖨️ 복합기 토너 교체": "toner.png" 
+        "🖨️ 복합기 토너 교체": "toner.jpg" 
     },
     "🏢 사무실 1-2 구역 OA": {
         "🧻 티슈": "1-2_tissue.jpg",
@@ -56,7 +56,7 @@ IMAGE_DATA = {
         "🧴 퐁퐁": "1-2_pongpong.jpg",
         "🧽 수세미": "1-2_sponge.jpg",
         "🖨️ 복합기 작동 불가!": "printer_error.png",
-        "🖨️ 복합기 토너 교체": "toner.png" 
+        "🖨️ 복합기 토너 교체": "toner.jpg" 
     },
     "🏢 사무실 2 구역 OA": {
         "🧻 티슈": "2_tissue.jpg",
@@ -65,7 +65,7 @@ IMAGE_DATA = {
         "🧴 퐁퐁": "2_pongpong.jpg",
         "🧽 수세미": "2_sponge.jpg",
         "🖨️ 복합기 작동 불가!": "printer_error.png",
-        "🖨️ 복합기 토너 교체": "toner.png" 
+        "🖨️ 복합기 토너 교체": "toner.jpg" 
     }
 }
 
